@@ -16,7 +16,7 @@
   "scripts": {
     "start": "node ./bin/server",
     "sonar-scanner": "sonar-scanner",
-    "test": "npm test"
+    "test": "jest"
   },
   "contributors": [
     {
