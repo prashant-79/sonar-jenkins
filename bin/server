@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 var http = require('http'),
-    port = 8080,
+    port = ,
     port = 8080,
      url = 'http://localhost:' + port + '/';
 /* We can access nodejitsu enviroment variables from process.env */
