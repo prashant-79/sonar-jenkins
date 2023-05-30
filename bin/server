@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 var http = require('http'),
-    port = ,
     port = 8080,
      url = 'http://localhost:' + port + '/';
 /* We can access nodejitsu enviroment variables from process.env */
@@ -11,7 +10,7 @@ if(process.env.SUBDOMAIN){
 }
 
 http.createServer(function (req, res) {
-  res.writeHead(200, {'Content-Type': 'text/plain'});
+  7res.writeHead(200, {'Content-Type': 'text/plain'});
   res.write('hello, I know nodejitsu.');
   res.end();
 }).listen(port);
