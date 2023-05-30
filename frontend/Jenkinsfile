@@ -1,0 +1,54 @@
+pipeline {
+    agent any
+    environment {
+        AWS_ACCOUNT_ID = "559559966174"
+        AWS_DEFAULT_REGION = "us-east-2"
+        IMAGE_REPO_NAME = "todo-frontend"
+        REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
+    }
+    stages {
+        // Login To AWS ECR
+        stage('Logging into AWS ECR') {
+            steps {
+                    sh "aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com" 
+            }
+        }
+
+        // Building Docker images
+        stage('Build') {
+            steps {
+                    sh "docker build -t ${IMAGE_REPO_NAME} ./frontend/" //if Dockerfile present same as Jenkins use this >> docker build -t ${IMAGE_REPO_NAME} .
+                }
+            }
+
+        // Image Test with Sonarqube
+        stage('Sonarqube Scan') {
+        environment {
+            scannerHome = tool 'SonarqubeScanner'
+        }
+            steps {
+            withSonarQubeEnv('sonarqube') {
+                sh "${scannerHome}/bin/sonar-scanner"
+            }
+            timeout(time: 2, unit: 'MINUTES') {
+                waitForQualityGate abortPipeline: true
+            }
+        }
+    }
+
+        // Uploading Docker images into AWS ECR
+        stage('Pushing to ECR') {
+            steps {
+                    sh "docker tag ${IMAGE_REPO_NAME}:latest ${REPOSITORY_URI}:latest"
+                    sh "docker push ${REPOSITORY_URI}:latest"
+            }
+        }
+    }
+}
+
+
+// reference
+//https://medium.com/@vijulpatel865/building-docker-image-using-jenkins-pipeline-push-it-to-aws-ecr-aa02cc7a295e
+//https://wiki.jenkins.io/display/JENKINS/Building+a+software+project#Buildingasoftwareproject-belowJenkinsSetEnvironmentVariables
+//https://medium.com/@rosaniline/setup-sonarqube-with-jenkins-declarative-pipeline-75bccdc9075f
+//Don't Forget To Configure AWS CLI on Jenkins server us jenkins user
