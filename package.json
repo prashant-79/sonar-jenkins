@@ -16,7 +16,7 @@
   "scripts": {
     "start": "node ./bin/server",
     "sonar-scanner": "sonar-scanner",
-    "test": "mocha"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "contributors": [
     {
