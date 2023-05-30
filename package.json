@@ -15,7 +15,6 @@
   "homepage": "http://nodeapps.github.com/helloworld",
   "scripts": {
     "start": "node ./bin/server"
-    "sonar-scanner": "npm run sonar-scanner"
   },
   "contributors": [
     {
